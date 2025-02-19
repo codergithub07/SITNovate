@@ -5,6 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:aws_signature_v4/aws_signature_v4.dart';
 import 'package:aws_common/aws_common.dart';
 import 'package:voice_assistant/utils/secrets.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class AmazonPollyService {
   final String accessKey = Secrets.awsAccessKey;
@@ -44,7 +46,7 @@ class AmazonPollyService {
     final response = await http.post(
       signedRequest.uri,
       headers: signedRequest.headers,
-      body: signedRequest.body,
+      body: await signedRequest.bodyBytes,
     );
 
     if (response.statusCode == 200) {
@@ -55,11 +57,24 @@ class AmazonPollyService {
     }
   }
 
+  // Future<String?> _saveAndPlayAudio(List<int> audioBytes) async {
+  //   final player = AudioPlayer();
+  //   final String tempPath = '/tmp/audio.mp3'; // Adjust for your platform
+  //   final file = File(tempPath);
+  //   await file.writeAsBytes(audioBytes);
+  //   await player.play(DeviceFileSource(file.path));
+  //   return file.path;
+  // }
   Future<String?> _saveAndPlayAudio(List<int> audioBytes) async {
     final player = AudioPlayer();
-    final String tempPath = '/tmp/audio.mp3'; // Adjust for your platform
+
+    // Get a valid temp directory
+    final directory = await getTemporaryDirectory();
+    final String tempPath = path.join(directory.path, 'audio.mp3');
+
     final file = File(tempPath);
     await file.writeAsBytes(audioBytes);
+
     await player.play(DeviceFileSource(file.path));
     return file.path;
   }

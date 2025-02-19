@@ -20,7 +20,7 @@ class MyAppState extends State<MyApp> {
   void toggleTheme(bool isDarkTheme) {
     _themeMode.value = isDarkTheme ? ThemeMode.dark : ThemeMode.light;
 
-    
+
     _isDarkThemeNotifier.value = isDarkTheme;
   }
 

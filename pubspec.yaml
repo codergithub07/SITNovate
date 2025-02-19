@@ -38,6 +38,7 @@ dependencies:
   http: ^1.2.2
   flutter_tts: ^4.2.0
   audioplayers: ^6.2.0
+  aws_signature_v4: ^0.6.3
   
 
 

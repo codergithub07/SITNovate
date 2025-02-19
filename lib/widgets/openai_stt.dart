@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:voice_assistant/utils/openai_tts.dart';
+import 'package:voice_assistant/widgets/openai_tts.dart';
 
 class OpenAISpeechToText {
   final String apiKey = "YOUR_OPENAI_API_KEY";

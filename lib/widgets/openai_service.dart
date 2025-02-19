@@ -16,7 +16,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $openAiApiKey',
+          'Authorization': 'Bearer $Secrets.openAiApiKey',
         },
         body: jsonEncode(
           {
@@ -64,7 +64,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $openAiApiKey',
+          'Authorization': 'Bearer $Secrets.openAiApiKey',
         },
         body: jsonEncode(
           {
@@ -100,7 +100,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/images/generations'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $openAiApiKey',
+          'Authorization': 'Bearer $Secrets.openAiApiKey',
         },
         body: jsonEncode(
           {

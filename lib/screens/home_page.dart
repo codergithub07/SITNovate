@@ -1,13 +1,10 @@
 // ignore_for_file: avoid_print
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-
-import 'package:voice_assistant/utils/openai_stt.dart';
 import 'package:voice_assistant/utils/pallete.dart';
 import 'package:voice_assistant/widgets/openai_service.dart';
 
@@ -63,6 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    // AmazonPollyService().getPollyAudio('hello there i am amazon polly');
     // getAvailableLanguages();
     // getTtsLanguages();
     super.initState();
@@ -72,7 +70,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initstt() async {
-    playTTS();
+    // playTTS();
+    
     await speechToText.initialize(onStatus: onSpeechStatus);
     await flutterTts.setLanguage('hi_IN');
     flutterTts.setPitch(0.5);

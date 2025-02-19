@@ -5,7 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:voice_assistant/utils/secrets.dart';
 
 class OpenAITTS {
-  final String apiKey = openAiApiKey;
+  final String apiKey = Secrets.openAiApiKey;
 
   Future<void> speakText(String text) async {
     final Uri url = Uri.parse("https://api.openai.com/v1/audio/speech");

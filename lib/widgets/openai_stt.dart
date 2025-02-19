@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:voice_assistant/utils/secrets.dart';
 import 'package:voice_assistant/widgets/openai_tts.dart';
 
 class OpenAISpeechToText {
-  final String apiKey = "YOUR_OPENAI_API_KEY";
+  final String apiKey = Secrets.openAiApiKey;
 
   Future<String?> transcribeAudio(File audioFile) async {
     final Uri url = Uri.parse("https://api.openai.com/v1/audio/transcriptions");

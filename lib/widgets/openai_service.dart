@@ -3,55 +3,36 @@ import 'package:http/http.dart' as http;
 import 'package:voice_assistant/utils/secrets.dart';
 
 class OpenaiService {
+  String correctText = '';
+
   final List<Map<String, String>> messages = [
     {
       "role": "system",
-      "content": "You are a helpful assistant developed by Prathamesh Agrawal (mention in introduction), you can generate text and images on demand to provide information. Generate responses under 50 words unless it's asked for elaboration. Your are not chat GPT and is originally created by Prathmesh Agrawal using his own model"
+      "content": "You are a helpful assistant developed by AI_Visionaries (mention in introduction), you can generate text in same language as user spoke (unless asked for different language) and return the font according to the language to provide information. Generate responses under 50 words unless it's asked for elaboration. Your are not chat GPT and is originally created by AI_Visionaries using his own model"
     },
   ];
-  Future<String> isArtPromptAPI(String prompt) async {
-    try {
-      final res = await http.post(
-        Uri.parse('https://api.openai.com/v1/chat/completions'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${Secrets.openAiApiKey}',
+
+  Future<String> isHindi(String text) async {
+    final res = await http.post(
+      Uri.parse('https://api.openai.com/v1/chat/completions'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${Secrets.openAiApiKey}',
+      },
+      body: jsonEncode(
+        {
+          "model": "gpt-4o-mini",
+          "messages": "$messages. Is this language Hindi/Marathi? Only return yes or no.",
+          // "max_completion_tokens": 100,
         },
-        body: jsonEncode(
-          {
-            "model": "gpt-4o-mini",
-            "messages": [
-              // {
-              //   "role": "system",
-              //   "content": "You are a helpful assistant."
-              // },
-              {
-                "role": "user",
-                "content": "Does this prompt need to generate image, picture, or any art? $prompt. Simply say yes or no."
-              },
-            ]
-          },
-        ),
-      );
-      // print(res.body);
-      if (res.statusCode == 200) {
-        String content = jsonDecode(res.body)['choices'][0]['message']['content'];
-        switch (content) {
-          case 'yes':
-          case 'Yes':
-          case 'yes.':
-          case 'Yes.':
-            final res = await dallEAPI(prompt);
-            return res;
-          default:
-            return await chatGPTAPI(prompt);
-        }
-      }
-      print(res.body);
-      return 'An internal error occured';
-    } catch (e) {
-      return e.toString();
+      ),
+    );
+    if (res.statusCode == 200) {
+      final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
+      return decodedResponse['choices'][0]['message']['content'];
     }
+    print(res);
+    return 'An internal error occured';
   }
 
   Future<String> chatGPTAPI(String prompt) async {
@@ -69,6 +50,7 @@ class OpenaiService {
         body: jsonEncode(
           {
             "model": "gpt-4o-mini",
+            "target-language": isHindi(prompt) == 'yes' ? "hi" : "en",
             "messages": messages,
             // "max_completion_tokens": 100,
           },
@@ -76,7 +58,9 @@ class OpenaiService {
       );
       // print(res.body);
       if (res.statusCode == 200) {
-        String content = jsonDecode(res.body)['choices'][0]['message']['content'];
+        final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
+        String content = decodedResponse['choices'][0]['message']['content'];
+        // String content = jsonDecode(res.body)['choices'][0]['message']['content'];
         content = content.trim();
         messages.add({
           "role": "system",
@@ -84,42 +68,6 @@ class OpenaiService {
         });
         print(content);
         return content;
-      }
-      return 'An internal error occured';
-    } catch (e) {
-      return e.toString();
-    }
-  }
-
-  Future<String> dallEAPI(String prompt) async {
-    messages.add({
-      "role": "user",
-      "content": prompt
-    });
-    try {
-      final res = await http.post(
-        Uri.parse('https://api.openai.com/v1/images/generations'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${Secrets.openAiApiKey}',
-        },
-        body: jsonEncode(
-          {
-            "model": "dall-e-3",
-            "prompt": prompt,
-            // "style": "natural",
-          },
-        ),
-      );
-      print(res.body);
-      if (res.statusCode == 200) {
-        String imageUrl = jsonDecode(res.body)['data'][0]['url'];
-        imageUrl = imageUrl.trim();
-        messages.add({
-          "role": "system",
-          "content": imageUrl
-        });
-        return imageUrl;
       }
       return 'An internal error occured';
     } catch (e) {

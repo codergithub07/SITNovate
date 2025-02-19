@@ -2,13 +2,11 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/utils/pallete.dart';
-import 'package:voice_assistant/widgets/aws_polly.dart';
-import 'package:voice_assistant/widgets/el_labs.dart';
 import 'package:voice_assistant/widgets/openai_service.dart';
+import 'package:voice_assistant/widgets/openai_tts.dart';
 
 class HomePage extends StatefulWidget {
   final ValueNotifier<bool> isDarkThemeNotifier;
@@ -22,7 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? generatedContent;
-  FlutterTts flutterTts = FlutterTts();
   SpeechToText speechToText = SpeechToText();
   String? generatedImage;
   final OpenaiService openaiService = OpenaiService();
@@ -76,8 +73,7 @@ class _HomePageState extends State<HomePage> {
     // playTTS();
 
     await speechToText.initialize(onStatus: onSpeechStatus);
-    await flutterTts.setLanguage('hi_IN');
-    flutterTts.setPitch(0.5);
+
     setState(() {});
   }
 
@@ -100,15 +96,10 @@ class _HomePageState extends State<HomePage> {
   Future<void> action() async {
     if (lastWords.isNotEmpty) {
       recentCommands.add(lastWords);
-      final speech = await openaiService.isArtPromptAPI(lastWords);
-      if (speech.contains('https://')) {
-        generatedImage = speech;
-        generatedContent = null;
-      } else {
-        generatedContent = speech;
-        systemSpeak(speech);
-        generatedImage = null;
-      }
+      final speech = await openaiService.chatGPTAPI(lastWords);
+      generatedContent = speech;
+      OpenAITTS().speakText(speech);
+      generatedImage = null;
       setState(() {});
       lastWords = '';
     }
@@ -118,10 +109,6 @@ class _HomePageState extends State<HomePage> {
     if (status == "done") {
       action();
     }
-  }
-
-  Future<void> systemSpeak(String content) async {
-    await flutterTts.speak(content);
   }
 
   void generateRandomSuggestions() {
@@ -138,7 +125,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     widget.isDarkThemeNotifier.removeListener(_updateTheme);
     speechToText.stop();
-    flutterTts.stop();
+    // flutterTts.stop();
     super.dispose();
   }
 
@@ -163,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 generatedContent = null;
                 generatedImage = null;
-                flutterTts.stop();
+                // flutterTts.stop();
                 recentCommands.clear();
                 generateRandomSuggestions();
               });
@@ -308,7 +295,7 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             if (await speechToText.hasPermission) {
-              flutterTts.stop();
+              // flutterTts.stop();
               if (speechToText.isListening) {
                 stopListening();
 

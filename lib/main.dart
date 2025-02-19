@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voice_assistant/screens/home_page.dart';
 import 'package:voice_assistant/utils/pallete.dart';
 
-void main() {
+Future<void> main() async {
   runApp(MyApp());
 }
 
@@ -19,7 +19,6 @@ class MyAppState extends State<MyApp> {
 
   void toggleTheme(bool isDarkTheme) {
     _themeMode.value = isDarkTheme ? ThemeMode.dark : ThemeMode.light;
-
 
     _isDarkThemeNotifier.value = isDarkTheme;
   }

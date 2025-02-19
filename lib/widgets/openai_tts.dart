@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data'; // Import this for Uint8List
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:voice_assistant/utils/secrets.dart';
+import 'package:voice_assistant/utils/secret.dart';
 
 class OpenAITTS {
   final String apiKey = Secrets.openAiApiKey;

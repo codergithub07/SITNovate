@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:voice_assistant/utils/secrets.dart';
+import 'package:voice_assistant/utils/secret.dart';
 import 'package:voice_assistant/widgets/openai_tts.dart';
 
 class OpenAISpeechToText {

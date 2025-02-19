@@ -1,4 +1,4 @@
-package com.example.test
+package com.example.voice_assistant
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -42,6 +42,7 @@ dependencies:
   aws_common: ^0.7.5
   path_provider: ^2.1.5
   path: ^1.9.0
+  convert: ^3.1.2
   
 
 
@@ -97,9 +98,9 @@ flutter:
         - asset: assets/fonts/Cera-Pro-Bold.otf
         - asset: assets/fonts/Cera-Pro-Medium.otf
       
-    # - family: NotoSansDevanagari
-    #   fonts:
-    #     - asset: assets/fonts/NotoSansDevanagari-Regular.ttf
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSansDevanagari-VariableFont_wdth,wght.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -7,6 +7,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/utils/pallete.dart';
 import 'package:voice_assistant/widgets/aws_polly.dart';
+import 'package:voice_assistant/widgets/el_labs.dart';
 import 'package:voice_assistant/widgets/openai_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,7 +62,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    AmazonPollyService().getPollyAudio('hello there i am amazon polly');
+    // ElevenLabsTTS().getAudio('hello chacha kaise ho');
+    // AmazonPollyService().getPollyAudio('नन्हा बच्चा पार्क में खुश होकर गेंद से खेल रहा था।', tone: 'shy');
     // getAvailableLanguages();
     // getTtsLanguages();
     super.initState();
@@ -72,7 +74,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> initstt() async {
     // playTTS();
-    
+
     await speechToText.initialize(onStatus: onSpeechStatus);
     await flutterTts.setLanguage('hi_IN');
     flutterTts.setPitch(0.5);
@@ -239,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         color: Pallete.mainFontColor,
                         fontSize: generatedContent == null ? 25 : 18,
-                        fontFamily: 'Cera Pro',
+                        fontFamily: 'NotoSansDevanagari',
                       ),
                     ),
                   ),

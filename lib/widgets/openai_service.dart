@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:voice_assistant/utils/secrets.dart';
 
@@ -16,7 +15,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $Secrets.openAiApiKey',
+          'Authorization': 'Bearer ${Secrets.openAiApiKey}',
         },
         body: jsonEncode(
           {
@@ -48,6 +47,7 @@ class OpenaiService {
             return await chatGPTAPI(prompt);
         }
       }
+      print(res.body);
       return 'An internal error occured';
     } catch (e) {
       return e.toString();
@@ -64,7 +64,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $Secrets.openAiApiKey',
+          'Authorization': 'Bearer ${Secrets.openAiApiKey}',
         },
         body: jsonEncode(
           {
@@ -82,6 +82,7 @@ class OpenaiService {
           "role": "system",
           "content": content
         });
+        print(content);
         return content;
       }
       return 'An internal error occured';
@@ -100,7 +101,7 @@ class OpenaiService {
         Uri.parse('https://api.openai.com/v1/images/generations'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $Secrets.openAiApiKey',
+          'Authorization': 'Bearer ${Secrets.openAiApiKey}',
         },
         body: jsonEncode(
           {

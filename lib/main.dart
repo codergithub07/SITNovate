@@ -47,5 +47,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-
-void temp() {}

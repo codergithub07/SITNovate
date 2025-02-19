@@ -6,6 +6,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/utils/pallete.dart';
+import 'package:voice_assistant/widgets/aws_polly.dart';
 import 'package:voice_assistant/widgets/openai_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // AmazonPollyService().getPollyAudio('hello there i am amazon polly');
+    AmazonPollyService().getPollyAudio('hello there i am amazon polly');
     // getAvailableLanguages();
     // getTtsLanguages();
     super.initState();

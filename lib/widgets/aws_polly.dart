@@ -1,77 +1,66 @@
-// import 'dart:convert';
-// import 'dart:typed_data';
-// import 'package:http/http.dart' as http;
-// import 'package:audioplayers/audioplayers.dart';
-// import 'package:aws_signature_v4/aws_signature_v4.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:aws_signature_v4/aws_signature_v4.dart';
+import 'package:aws_common/aws_common.dart';
+import 'package:voice_assistant/utils/secrets.dart';
 
-// class AmazonPollyTTS {
-//   final String accessKey = "YOUR_AWS_ACCESS_KEY"; // Replace with actual AWS Access Key
-//   final String secretKey = "YOUR_AWS_SECRET_KEY"; // Replace with actual AWS Secret Key
-//   final String region = "us-east-1"; // Change to your AWS region
+class AmazonPollyService {
+  final String accessKey = Secrets.awsAccessKey;
+  final String secretKey = Secrets.awsSecretKey;
+  final String region = 'ap-south-1';
+  final AWSCredentials credentials;
 
-//   Future<void> speakText(String text, String voice, String emotion) async {
-//     final String endpoint = "https://polly.$region.amazonaws.com/v1/speech";
-//     final Uri uri = Uri.parse(endpoint);
+  AmazonPollyService()
+      : credentials = AWSCredentials(
+          Secrets.awsAccessKey,
+          Secrets.awsSecretKey,
+        );
 
-//     // SSML format for expressive speech
-//     String ssmlText = '''
-//       <speak>
-//         <amazon:emotion name="$emotion" intensity="medium">$text</amazon:emotion>
-//       </speak>
-//     ''';
+  Future<String?> getPollyAudio(String text) async {
+    final endpoint = Uri.https('polly.$region.amazonaws.com', '/v1/speech');
+    final signer = AWSSigV4Signer(
+      credentialsProvider: AWSCredentialsProvider(credentials),
+    );
 
-//     final Map<String, String> headers = {
-//       "Content-Type": "application/json",
-//       "Host": uri.host,
-//       "X-Amz-Target": "com.amazonaws.polly.v1.SynthesizeSpeech",
-//     };
+    final request = AWSHttpRequest(
+      method: AWSHttpMethod.post,
+      uri: endpoint,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Amz-Target': 'com.amazonaws.polly.v1.Polly.SynthesizeSpeech',
+      },
+      body: utf8.encode(jsonEncode({
+        'Text': text,
+        'OutputFormat': 'mp3',
+        'VoiceId': 'Aditi',
+        'LanguageCode': 'hi-IN',
+      })),
+    );
 
-//     final Map<String, dynamic> body = {
-//       "Text": ssmlText,
-//       "OutputFormat": "mp3",
-//       "VoiceId": voice,
-//       "TextType": "ssml",
-//     };
+    final signedRequest = await signer.sign(request, credentialScope: AWSCredentialScope(region: region, service: AWSService.polly));
 
-//     final signer = AWSSigV4Signer(
-//       credentialsProvider: AWSCredentialsProvider.static(
-//         accessKey: accessKey,
-//         secretKey: secretKey,
-//       ),
-//       serviceConfiguration: AWSCredentialScope(
-//         service: "polly",
-//         region: region,
-//       ),
-//     );
+    final response = await http.post(
+      signedRequest.uri,
+      headers: signedRequest.headers,
+      body: signedRequest.body,
+    );
 
-//     final signedRequest = signer.sign(
-//       AWSHttpRequest(
-//         method: "POST",
-//         uri: uri,
-//         headers: headers,
-//         body: jsonEncode(body),
-//         service: "polly",
-//         region: region,
-//       ),
-//     );
+    if (response.statusCode == 200) {
+      return _saveAndPlayAudio(response.bodyBytes);
+    } else {
+      print('Error: ${response.body}');
+      return null;
+    }
+  }
 
-//     final response = await http.post(
-//       uri,
-//       headers: signedRequest.headers,
-//       body: signedRequest.body,
-//     );
-
-//     if (response.statusCode == 200) {
-//       print("✅ Polly audio generated successfully!");
-//       final Uint8List audioBytes = Uint8List.fromList(response.bodyBytes);
-//       _playAudio(audioBytes);
-//     } else {
-//       print("❌ Error: ${response.body}");
-//     }
-//   }
-
-//   void _playAudio(Uint8List audioBytes) async {
-//     final player = AudioPlayer();
-//     await player.play(BytesSource(audioBytes));
-//   }
-// }
+  Future<String?> _saveAndPlayAudio(List<int> audioBytes) async {
+    final player = AudioPlayer();
+    final String tempPath = '/tmp/audio.mp3'; // Adjust for your platform
+    final file = File(tempPath);
+    await file.writeAsBytes(audioBytes);
+    await player.play(DeviceFileSource(file.path));
+    return file.path;
+  }
+}

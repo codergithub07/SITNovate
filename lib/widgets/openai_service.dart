@@ -5,12 +5,13 @@ import 'package:voice_assistant/utils/secret.dart';
 class OpenaiService {
   String correctText = '';
   final String apiKey = Secrets.openAiApiKey;
-  String targetLang = 'en';
+  String targetLang = '';
+  String inputText = '';
 
   final List<Map<String, String>> messages = [
     {
       "role": "system",
-      "content": "You are a helpful assistant developed by AI_Visionaries (mention in introduction), you can generate text in same language as user spoke (unless asked for different language) to provide information. Generate responses under 50 words unless it's asked for elaboration."
+      "content": "act like you are a character. Generate responses under 50 words unless it's asked for elaboration."
     },
   ];
   final List<Map<String, String>> tempList = [
@@ -20,11 +21,16 @@ class OpenaiService {
     },
   ];
 
+  void setInputText(String text) {
+    inputText = text;
+    print(inputText);
+  }
+
   Future<String> isHindi(String text) async {
     tempList.add(
       {
         "role": "user",
-        "content": "$text. what language is this? return only hindi if hindi, marathi if marathi, english if english",
+        "content": "$text. what language is this? return only hindi if hindi (even if only one word is of hindi), marathi if marathi (even if only one word is of marathi), else english",
       },
     );
     try {
@@ -44,7 +50,7 @@ class OpenaiService {
       );
       if (res.statusCode == 200) {
         final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
-        print(decodedResponse['choices'][0]['message']['content']);
+        // print(decodedResponse['choices'][0]['message']['content']);
         return decodedResponse['choices'][0]['message']['content'];
       }
       return 'An internal error occured';
@@ -54,11 +60,12 @@ class OpenaiService {
   }
 
   Future<String> chatGPTAPI(String prompt) async {
+    messages[0]["content"] = "act like you are $inputText. Generate responses only according to your given character only, under 50 words unless it's asked for elaboration. Avoid using special characters unless it's necessary.";
     final isHindiResult = await isHindi(prompt);
     final targetLang = isHindiResult.trim();
     messages.add({
       "role": "user",
-      "content": "$prompt. Respond in $targetLang language and use font according to the language including the numbers. avoid using special characters unless its necessary",
+      "content": "$prompt. Respond in $targetLang language and use font according to the language.",
     });
     print(targetLang);
     try {
@@ -87,6 +94,7 @@ class OpenaiService {
           "content": content
         });
         print(content);
+        print(messages[0]["content"]);
         return content;
       }
       print(res.body);

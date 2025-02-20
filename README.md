@@ -102,6 +102,14 @@ For developers looking to contribute or run this project:
 2.  **Navigate to the project directory:** `cd [project-directory]`
 3.  **[Add specific instructions for Flutter or React version setup, e.g., install dependencies, set up API keys, run commands etc.]**
 
+## API Key:
+1. Class Secrets {
+2.    String openAiApiKey = 'your-api-key'
+3.}
+  add this to utility folder in lib forlder
+
+  
+
 ## Team
 
 *   Group 15: AI\_Visionaries

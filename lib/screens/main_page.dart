@@ -8,10 +8,8 @@ import 'package:voice_assistant/widgets/openai_service.dart';
 import 'package:voice_assistant/widgets/openai_tts.dart';
 
 class MainPage extends StatefulWidget {
-  final ValueNotifier<bool> isDarkThemeNotifier;
-  final Function(bool) toggleTheme;
 
-  const MainPage({super.key, required this.isDarkThemeNotifier, required this.toggleTheme});
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -23,8 +21,6 @@ class _MainPageState extends State<MainPage> {
   SpeechToText speechToText = SpeechToText();
   String? generatedImage;
   final openaiService = OpenaiService();
-  final ThemeData theme = ThemeData();
-  bool isDarkTheme = false;
   String lastWords = '';
   List<String> recentCommands = [];
   List<String> allSuggestions = [
@@ -44,7 +40,6 @@ class _MainPageState extends State<MainPage> {
     tts = OpenAITTS(); // Ensure it is reinitialized
     initstt(); // Initialize speech-to-text
     generateRandomSuggestions();
-    widget.isDarkThemeNotifier.addListener(_updateTheme);
   }
 
   Future<void> initstt() async {
@@ -105,7 +100,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    widget.isDarkThemeNotifier.removeListener(_updateTheme);
     speechToText.stop();
 
     tts.stopTTS();
@@ -114,50 +108,26 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
-  void _updateTheme() {
-    setState(() {
-      isDarkTheme = widget.isDarkThemeNotifier.value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: Scaffold(
-        key: ValueKey<bool>(isDarkTheme),
         appBar: AppBar(
           title: const Text('Voice Assistant'),
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Navigator.pop(context, lastWords); // Pass the updated inputText back to HomePage
+              setState(() {
+                generatedContent = null;
+                generatedImage = null;
+                tts.stopTTS();
+                recentCommands.clear();
+                generateRandomSuggestions();
+              });
             },
           ),
-          actions: [
-            PopupMenuButton<int>(
-              icon: const Icon(Icons.settings),
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: widget.isDarkThemeNotifier,
-                    builder: (context, isDarkTheme, child) {
-                      return SwitchListTile(
-                        title: const Text('Dark Theme'),
-                        value: isDarkTheme,
-                        onChanged: (value) {
-                          widget.isDarkThemeNotifier.value = value;
-                          widget.toggleTheme(value);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
         body: SingleChildScrollView(
           child: Padding(

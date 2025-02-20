@@ -37,10 +37,7 @@ class MyAppState extends State<MyApp> {
           ),
           darkTheme: ThemeData.dark(),
           themeMode: themeMode,
-          home: HomePage(
-            isDarkThemeNotifier: _isDarkThemeNotifier,
-            toggleTheme: toggleTheme,
-          ),
+          home: HomePage(),
         );
       },
     );

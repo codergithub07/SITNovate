@@ -31,7 +31,7 @@ class OpenaiService {
 
   void setInputText(String text) {
     inputText = text;
-    messages[0]["content"] = "act like you are $inputText. Generate responses only according to your given character, under 50 words unless it's asked for elaboration. Avoid using special characters unless necessary.";
+    messages[0]["content"] = "act like you are $inputText. Generate responses only according to your given character, under 50 words unless it's asked for elaboration. Avoid using special characters unless necessary. Use proper punctuation to emphasize your character. ";
     print("Character set to: $inputText");
   }
 

@@ -1,0 +1,45 @@
+.message {
+    margin-bottom: 12px;
+    padding: 15px;
+    border-radius: 15px;
+    clear: both;
+    max-width: 80%;
+    word-wrap: break-word;
+    animation: messageAppear 0.5s ease-out forwards;
+    transform-origin: top center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Message shadow */
+}
+
+.userMessage {
+    background-color: #2697dd; /* Darker green for user messages in dark theme */
+    color: #fff;
+    align-self: flex-end;
+    float: right;
+    border-bottom-right-radius: 2px;
+}
+
+.botMessage {
+    background-color: #444; /* Darker grey for bot messages in dark theme */
+    color: #eee;
+    align-self: flex-start;
+    float: left;
+    border-bottom-left-radius: 2px;
+}
+
+.messageContent {
+    font-size: 17px;
+    color: #f0f0f0; /* Lighter message text color */
+    text-shadow: 1px 1px 1px #000; /* Text shadow for messages */
+}
+
+/* Keyframes for message appear animation */
+@keyframes messageAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

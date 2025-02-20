@@ -1,0 +1,136 @@
+.chatInterface {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    max-width: 850px;
+    margin: 30px auto;
+    border: 1px solid #333; /* Darker border for chat interface */
+    border-radius: 15px;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    background-color: #222; /* Darker chat interface background */
+    color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* Stronger shadow */
+    animation: slideUp 0.8s ease-out;
+}
+
+.chatHeader {
+    background-color: #00a0e4; /* Vibrant blue header color */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #0080b3; /* Darker blue border bottom */
+    font-size: 1.9em; /* Slightly larger header text */
+    font-weight: bold;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4); /* Enhanced text shadow */
+    animation: fadeInDown 1s ease-out; /* Header animation */
+}
+
+.chatMessages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #2a2a2a; /* Dark message area background */
+    border-radius: 0 0 15px 15px;
+    padding-bottom: 30px;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #555 #333; /* For Firefox */
+}
+
+.chatMessages::-webkit-scrollbar {
+    width: 8px; /* For Chrome, Safari, and Opera */
+}
+
+.chatMessages::-webkit-scrollbar-track {
+    background: #333; /* Scrollbar track color */
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+    background-color: #555; /* Scrollbar thumb color */
+    border-radius: 4px;
+}
+
+.chatInputArea {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #333; /* Darker input area border */
+    background-color: #1e1e1e; /* Dark input area background */
+    border-radius: 0 0 15px 15px;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4); /* Inset shadow for depth */
+}
+
+.inputField {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #555; /* Darker input field border */
+    border-radius: 8px;
+    margin-right: 10px;
+    font-size: 16px;
+    background-color: #333; /* Darker input background */
+    color: #f0f0f0; /* Light input text color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) inset; /* Inset shadow */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.inputField::placeholder {
+    color: #aaa; /* Lighter placeholder color */
+}
+
+.inputField:focus {
+    border-color: #00a0e4; /* Accent color on focus */
+    box-shadow: 0 0 0 2px rgba(0, 160, 228, 0.5); /* Focus ring effect */
+    outline: none;
+}
+
+.sendButton, .voiceButton {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00a0e4; /* Vibrant blue button color */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-left: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Button shadow */
+}
+
+.sendButton:hover, .voiceButton:hover {
+    background-color: #88bfd4; /* Darker blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+}
+
+.voiceButton[disabled] {
+    background-color: #555; /* Darker disabled button */
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Keyframes for animations */
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,62 @@
+.voiceButton {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00a0e4; /* Vibrant blue voice button */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Button shadow */
+}
+
+.voiceButton:hover {
+    background-color: #0080b3; /* Darker blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+}
+
+.voiceButton[disabled] {
+    background-color: #555; /* Darker disabled button */
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: none;
+}
+
+.listening {
+    background-color: #ffc107; /* Yellow/amber when listening */
+    color: black;
+    animation: pulse 1.5s infinite, listeningGlow 2s infinite alternate; /* Pulse and glow animations */
+}
+
+.listening:hover {
+    background-color: #ffca2b;
+}
+
+/* Keyframes for pulse animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+    }
+}
+
+/* Keyframes for listening glow animation */
+@keyframes listeningGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba(255, 193, 7, 0.5);
+    }
+}

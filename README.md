@@ -108,10 +108,10 @@ For developers looking to contribute or run this project:
 3.}
   add this to utility folder in lib forlder
 
-  Google Thinking API
-  Eleven AI API
-  S2T API
-  T2S API
+  1.Google Thinking API
+  2.Eleven AI API
+  3.S2T API
+  4.T2S API
   
 
 ## Team

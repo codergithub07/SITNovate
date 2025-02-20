@@ -235,7 +235,7 @@ class _MainPageState extends State<MainPage> {
                             itemCount: recentCommands.length,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                title: Text(recentCommands[index]),
+                                title: Text(recentCommands[index], style: TextStyle(color: Colors.amber),),
                               );
                             },
                           ),

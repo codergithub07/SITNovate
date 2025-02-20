@@ -22,7 +22,7 @@ class OpenAITTS {
       body: jsonEncode({
         "model": "tts-1",
         "input": text,
-        "voice": "onyx",
+        "voice": "fable",
       }),
     );
 

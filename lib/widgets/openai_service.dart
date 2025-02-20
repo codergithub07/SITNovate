@@ -3,36 +3,36 @@ import 'package:http/http.dart' as http;
 import 'package:voice_assistant/utils/secret.dart';
 
 class OpenaiService {
-  String correctText = '';
+  static final OpenaiService _instance = OpenaiService._internal();
+
+  factory OpenaiService() {
+    return _instance;
+  }
+
+  OpenaiService._internal(); // Private constructor
+
   final String apiKey = Secrets.openAiApiKey;
   String targetLang = '';
   String inputText = '';
+  String voice = 'default'; // Default voice
 
   final List<Map<String, String>> messages = [
     {
       "role": "system",
-      "content": "act like you are a character. Generate responses under 50 words unless it's asked for elaboration."
-    },
-  ];
-  final List<Map<String, String>> tempList = [
-    {
-      "role": "user",
-      "content": "",
+      "content": "act like you are a character. Generate responses under 50 words unless asked for elaboration."
     },
   ];
 
-  void setInputText(String text) {
+  void setInputText(String text) async {
     inputText = text;
-    print(inputText);
+    messages[0]["content"] = "act like you are $inputText. Generate responses only according to your given character, under 50 words unless it's asked for elaboration. Avoid using special characters unless necessary.";
+    print("Character set to: $inputText");
+
+    voice = await getCharacterVoice(inputText);
+    print("Voice set to: $voice");
   }
 
-  Future<String> isHindi(String text) async {
-    tempList.add(
-      {
-        "role": "user",
-        "content": "$text. what language is this? return only hindi if hindi (even if only one word is of hindi), marathi if marathi (even if only one word is of marathi), else english",
-      },
-    );
+  Future<String> getCharacterVoice(String character) async {
     try {
       final res = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),
@@ -40,34 +40,65 @@ class OpenaiService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $apiKey',
         },
-        body: jsonEncode(
-          {
-            "model": "gpt-4o-mini",
-            "messages": tempList,
-            // "max_completion_tokens": 100,
-          },
-        ),
+        body: jsonEncode({
+          "model": "gpt-4o-mini",
+          "messages": [
+            {
+              "role": "system",
+              "content": "Describe the voice characteristics of $character in 3 words."
+            }
+          ],
+        }),
       );
+
       if (res.statusCode == 200) {
         final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
-        // print(decodedResponse['choices'][0]['message']['content']);
-        return decodedResponse['choices'][0]['message']['content'];
+        return decodedResponse['choices'][0]['message']['content'].trim();
       }
-      return 'An internal error occured';
+      return 'default';
     } catch (e) {
-      return e.toString();
+      return 'default';
+    }
+  }
+
+  Future<String> isHindi(String text) async {
+    try {
+      final res = await http.post(
+        Uri.parse('https://api.openai.com/v1/chat/completions'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $apiKey',
+        },
+        body: jsonEncode({
+          "model": "gpt-4o-mini",
+          "messages": [
+            {
+              "role": "user",
+              "content": "$text. What language is this? Return only 'hindi' if it's Hindi, 'marathi' if Marathi, else 'english'."
+            }
+          ],
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
+        return decodedResponse['choices'][0]['message']['content'].trim();
+      }
+      return 'english';
+    } catch (e) {
+      return 'english';
     }
   }
 
   Future<String> chatGPTAPI(String prompt) async {
-    messages[0]["content"] = "act like you are $inputText. Generate responses only according to your given character only, under 50 words unless it's asked for elaboration. Avoid using special characters unless it's necessary.";
     final isHindiResult = await isHindi(prompt);
     final targetLang = isHindiResult.trim();
+
     messages.add({
       "role": "user",
-      "content": "$prompt. Respond in $targetLang language and use font according to the language.",
+      "content": "$prompt. Respond in $targetLang language and use the correct font for the language.",
     });
-    print(targetLang);
+
     try {
       final res = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),
@@ -75,30 +106,27 @@ class OpenaiService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $apiKey',
         },
-        body: jsonEncode(
-          {
-            "model": "gpt-4o-mini",
-            "messages": messages,
-            // "max_completion_tokens": 100,
-          },
-        ),
+        body: jsonEncode({
+          "model": "gpt-4o-mini",
+          "messages": messages,
+        }),
       );
-      // print(res.body);
+
       if (res.statusCode == 200) {
         final decodedResponse = jsonDecode(utf8.decode(res.bodyBytes));
-        String content = decodedResponse['choices'][0]['message']['content'];
-        // String content = jsonDecode(res.body)['choices'][0]['message']['content'];
-        content = content.trim();
+        String content = decodedResponse['choices'][0]['message']['content'].trim();
+
         messages.add({
           "role": "system",
-          "content": content
+          "content": content,
         });
+
         print(content);
-        print(messages[0]["content"]);
         return content;
       }
+
       print(res.body);
-      return 'An internal error occured';
+      return 'An internal error occurred';
     } catch (e) {
       return e.toString();
     }

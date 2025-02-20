@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   bool isDarkTheme = false;
   final ValueNotifier<ThemeMode> _themeMode = ValueNotifier(ThemeMode.light);
   final ValueNotifier<bool> _isDarkThemeNotifier = ValueNotifier(false);
-  final OpenaiService openaiService = OpenaiService();
+  final openaiService = OpenaiService();
 
   @override
   void initState() {
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () async {
                     openaiService.setInputText(inputText); // Pass inputText to OpenaiService
                     // Navigate to the next screen and pass the inputText
-                    final result = await Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MainPage(
@@ -112,11 +112,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     );
-                    if (result != null) {
-                      setState(() {
-                        inputText = result; // Update inputText with the returned value
-                      });
-                    }
+                
                   },
                   child: const Text('Go to Next Screen'),
                 ),

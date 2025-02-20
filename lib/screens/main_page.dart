@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   String? generatedContent;
   SpeechToText speechToText = SpeechToText();
   String? generatedImage;
-  final OpenaiService openaiService = OpenaiService();
+  final openaiService = OpenaiService();
   final ThemeData theme = ThemeData();
   bool isDarkTheme = false;
   String lastWords = '';
@@ -41,8 +41,8 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    tts = OpenAITTS(); // Initialize the TTS instance
-    initstt();
+    tts = OpenAITTS(); // Ensure it is reinitialized
+    initstt(); // Initialize speech-to-text
     generateRandomSuggestions();
     widget.isDarkThemeNotifier.addListener(_updateTheme);
   }
@@ -68,12 +68,19 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void ensureTTSInitialized() {
+    // Ensure TTS is initialized
+    tts = OpenAITTS();
+  }
+
   Future<void> action() async {
     if (lastWords.isNotEmpty) {
       recentCommands.add(lastWords);
       final speech = await openaiService.chatGPTAPI(lastWords);
       generatedContent = speech;
+
       await tts.speakText(speech);
+
       generatedImage = null;
       setState(() {});
       lastWords = '';
@@ -100,8 +107,10 @@ class _MainPageState extends State<MainPage> {
   void dispose() {
     widget.isDarkThemeNotifier.removeListener(_updateTheme);
     speechToText.stop();
-    tts.dispose();
+
     tts.stopTTS();
+    tts.dispose();
+
     super.dispose();
   }
 
